@@ -1,0 +1,10 @@
+federation_version: 2
+subgraphs:
+  integrations:
+    routing_url: http://integrations:8000/graphql/
+    schema:
+      file: /output/integrations.graphql
+  governance:
+    routing_url: http://governance:8000/graphql/
+    schema:
+      file: /output/governance.graphql

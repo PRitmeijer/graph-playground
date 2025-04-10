@@ -1,0 +1,410 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.4", for: EXECUTION)
+  @link(url: "https://specs.apollo.dev/tag/v0.3")
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__directive(graphs: [join__Graph!], name: String!, args: join__DirectiveArguments) repeatable on SCHEMA | OBJECT | INTERFACE | FIELD_DEFINITION
+
+directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean, overrideLabel: String) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+directive @tag(name: String!) repeatable on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION | SCHEMA
+
+"""Date with time (isoformat)"""
+scalar DateTime
+  @join__type(graph: GOVERNANCE)
+  @join__type(graph: INTEGRATIONS)
+
+type DjangoModelType
+  @join__type(graph: GOVERNANCE)
+{
+  pk: ID!
+}
+
+"""
+
+     Errors messages and codes mapped to
+    fields or non fields errors.
+    Example:
+    {
+        field_name: [
+            {
+                "message": "error message",
+                "code": "error_code"
+            }
+        ],
+        other_field: [
+            {
+                "message": "error message",
+                "code": "error_code"
+            }
+        ],
+        nonFieldErrors: [
+            {
+                "message": "error message",
+                "code": "error_code"
+            }
+        ]
+    }
+    
+"""
+scalar ExpectedError
+  @join__type(graph: GOVERNANCE)
+
+scalar join__DirectiveArguments
+
+scalar join__FieldSet
+
+enum join__Graph {
+  GOVERNANCE @join__graph(name: "governance", url: "http://governance:8000/graphql/")
+  INTEGRATIONS @join__graph(name: "integrations", url: "http://integrations:8000/graphql/")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Mutation
+  @join__type(graph: GOVERNANCE)
+{
+  """
+  ### Checks if a token is not expired and correct.
+  
+  *Note that this is not for refresh tokens.*
+  
+  """
+  verifyToken(token: String!): VerifyTokenType!
+
+  """
+  Update user model fields, defined on settings.
+  
+  User must be verified.
+  
+  """
+  updateAccount(lastName: String, firstName: String): MutationNormalOutput!
+
+  """
+  Archive account and revoke refresh tokens.
+  
+  User must be verified and confirm password.
+  
+  """
+  archiveAccount(password: String!): MutationNormalOutput!
+
+  """
+  Delete account permanently or make `user.is_active=False`.
+  
+  The behavior is defined on settings. Anyway user refresh tokens are
+  revoked.
+  
+  User must be verified and confirm password.
+  
+  """
+  deleteAccount(password: String!): MutationNormalOutput!
+
+  """
+  Change account password when user knows the old password.
+  
+  A new token and refresh token are sent. User must be verified.
+  
+  """
+  passwordChange(newPassword2: String!, oldPassword: String!, newPassword1: String!): ObtainJSONWebTokenType!
+  tokenAuth(username: String!, password: String!): ObtainJSONWebTokenType! @tag(name: "public")
+  refreshToken(refreshToken: String!, revokeRefreshToken: Boolean!): ObtainJSONWebTokenType! @tag(name: "public")
+
+  """
+  Register user with fields defined in the settings. If the email field of
+  the user model is part of the registration fields (default), check if there
+  is no user with that email.
+  
+  If it exists, it does not register the user, even if the email field
+  is not defined as unique (default of the default django user model).
+  
+  When creating the user, it also creates a `UserStatus` related to
+  that user, making it possible to track if the user is archived /
+  verified.
+  
+  Send account verification email.
+  
+  If allowed to not verified users login, return token.
+  
+  """
+  register(username: String!, password1: String!, email: String!, password2: String!): MutationNormalOutput!
+
+  """
+  Verify user account.
+  
+  Receive the token that was sent by email. If the token is valid,
+  make the user verified by making the `user.status.verified` field
+  true.
+  
+  """
+  verifyAccount(token: String!): MutationNormalOutput!
+
+  """
+  Sends activation email.
+  
+  It is called resend because theoretically the first activation email
+  was sent when the user registered.
+  
+  If there is no user with the requested email, a successful response
+  is returned.
+  
+  """
+  resendActivationEmail(email: String!): MutationNormalOutput!
+
+  """
+  Send password reset email.
+  
+  For non verified users, send an activation email instead.
+  
+  If there is no user with the requested email, a successful response
+  is returned.
+  
+  """
+  sendPasswordResetEmail(email: String!): MutationNormalOutput!
+
+  """
+  Change user password without old password.
+  
+  Receive the token that was sent by email.
+  
+  If token and new passwords are valid, update user password and in
+  case of using refresh tokens, revoke all of them.
+  
+  Also, if user has not been verified yet, verify it.
+  
+  """
+  passwordReset(token: String!, newPassword2: String!, newPassword1: String!): MutationNormalOutput!
+
+  """
+  
+  Set user password - for password-less registration
+  
+  Receive the token that was sent by email.
+  
+  If token and new passwords are valid, set
+  user password and in case of using refresh
+  tokens, revoke all of them.
+  
+  Also, if user has not been verified yet, verify it.
+  
+  """
+  passwordSet(token: String!, newPassword2: String!, newPassword1: String!): MutationNormalOutput!
+
+  """
+  ### Suspends a refresh token.
+  
+  *token must exist to be revoked.*
+  
+  """
+  revokeToken(refreshToken: String!): RevokeRefreshTokenType!
+}
+
+type MutationNormalOutput
+  @join__type(graph: GOVERNANCE)
+{
+  success: Boolean!
+  errors: ExpectedError
+}
+
+"""
+
+    encapsulates token data, and refresh token data if `JWT_LONG_RUNNING_REFRESH_TOKEN` is on.
+    with an output interface.
+    
+"""
+type ObtainJSONWebTokenType implements OutputInterface
+  @join__implements(graph: GOVERNANCE, interface: "OutputInterface")
+  @join__type(graph: GOVERNANCE)
+{
+  success: Boolean!
+  errors: ExpectedError
+  user: UserType
+  token: TokenType
+  refreshToken: RefreshTokenType
+}
+
+interface OutputInterface
+  @join__type(graph: GOVERNANCE)
+{
+  success: Boolean!
+  errors: ExpectedError
+}
+
+type Query
+  @join__type(graph: GOVERNANCE)
+  @join__type(graph: INTEGRATIONS)
+{
+  me: UserType! @join__field(graph: GOVERNANCE)
+
+  """Returns the current user if he is not anonymous."""
+  public: UserType @join__field(graph: GOVERNANCE)
+  allTenants: [TenantType!]! @join__field(graph: GOVERNANCE)
+  getTenant(id: Int!): TenantType @join__field(graph: GOVERNANCE)
+  syncConfigurations: [SyncConfigurationType!]! @join__field(graph: INTEGRATIONS)
+  syncConfiguration(id: Int!): SyncConfigurationType @join__field(graph: INTEGRATIONS)
+  syncLogs: [SyncLogType!]! @join__field(graph: INTEGRATIONS)
+}
+
+"""
+
+Refresh token can be used to obtain a new token instead of log in again
+when the token expires.
+
+*This is only used if `JWT_LONG_RUNNING_REFRESH_TOKEN` is set to True.*
+
+"""
+type RefreshTokenType
+  @join__type(graph: GOVERNANCE)
+{
+  """randomly generated token that is attached to a FK user."""
+  token: String!
+  created: DateTime!
+  revoked: DateTime
+  expiresAt: DateTime!
+  isExpired: Boolean!
+}
+
+type RevokeRefreshTokenType
+  @join__type(graph: GOVERNANCE)
+{
+  success: Boolean!
+  refreshToken: RefreshTokenType
+  errors: ExpectedError
+}
+
+type SyncConfigurationType
+  @join__type(graph: INTEGRATIONS)
+{
+  id: ID!
+  tenantId: Int
+  pollyPublicationId: String!
+  pollyApiToken: String!
+  pollyUser: String!
+  sprinklrEnv: String!
+  sprinklrApiKey: String!
+  sprinklrAccessToken: String!
+  sprinklrClientSecret: String!
+  sprinklrRefreshToken: String!
+  folderId: String!
+  isActive: Boolean!
+  lastSync: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  logs: [SyncLogType!]!
+}
+
+type SyncLogType
+  @join__type(graph: INTEGRATIONS)
+{
+  id: ID!
+  timestamp: DateTime!
+  level: String!
+  message: String!
+}
+
+type Tenant
+  @join__type(graph: INTEGRATIONS, key: "id")
+{
+  id: ID!
+  syncConfig: [SyncConfigurationType!]!
+}
+
+type TenantType
+  @join__type(graph: GOVERNANCE)
+{
+  id: ID!
+  name: String!
+}
+
+"""
+
+the data that was used to create the token.
+
+"""
+type TokenPayloadType
+  @join__type(graph: GOVERNANCE)
+{
+  """when the token was created"""
+  origIat: DateTime!
+
+  """when the token will be expired"""
+  exp: DateTime!
+  username: String!
+}
+
+"""
+
+encapsulates the token with the payload that was used to create the token.
+
+"""
+type TokenType
+  @join__type(graph: GOVERNANCE)
+{
+  payload: TokenPayloadType!
+
+  """The encoded payload, namely a token."""
+  token: String!
+}
+
+type UserStatusType
+  @join__type(graph: GOVERNANCE)
+{
+  verified: Boolean!
+  archived: Boolean!
+}
+
+type UserType
+  @join__type(graph: GOVERNANCE)
+{
+  logentrySet: [DjangoModelType!]!
+  isSuperuser: Boolean!
+  lastLogin: DateTime
+  isStaff: Boolean!
+  isActive: Boolean!
+  dateJoined: DateTime!
+  status: UserStatusType!
+  lastName: String
+  id: ID!
+  firstName: String
+  username: String!
+  email: String!
+  archived: Boolean!
+  verified: Boolean!
+}
+
+type VerifyTokenType implements OutputInterface
+  @join__implements(graph: GOVERNANCE, interface: "OutputInterface")
+  @join__type(graph: GOVERNANCE)
+{
+  success: Boolean!
+  errors: ExpectedError
+  token: TokenType
+  user: UserType
+}
