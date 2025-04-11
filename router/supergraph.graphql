@@ -62,7 +62,7 @@ scalar DateTime
 scalar join__FieldSet
 
 enum join__Graph {
-  MOCK @join__graph(name: "mock", url: "http://mock:8000/graphql/")
+  MOCK @join__graph(name: "mock", url: "http://mock:8001/graphql/")
 }
 
 scalar link__Import

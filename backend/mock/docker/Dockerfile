@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y netcat-openbsd
 
 
 
-# Make port 8000 available to the world outside the container
-EXPOSE 8000
+# Make port 8001 available to the world outside the container
+EXPOSE 8001
 
 # Copy the entrypoint script
 COPY docker/entrypoint.sh /entrypoint.sh

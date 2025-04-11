@@ -1,2 +1,2 @@
 subgraphs:
-  mock: http://mock:8000/graphql/
+  mock: http://mock:8001/graphql/

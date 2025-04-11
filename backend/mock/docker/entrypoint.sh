@@ -27,4 +27,4 @@ EOF
 
 # Start Gunicorn server
 echo "Starting server..."
-gunicorn wsgi:application --bind 0.0.0.0:8000
+gunicorn wsgi:application --bind 0.0.0.0:8001
