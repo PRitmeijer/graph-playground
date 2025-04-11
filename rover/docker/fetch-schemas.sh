@@ -3,7 +3,8 @@ set -e
 
 SUBGRAPHS_FILE="/config/subgraphs.yaml"
 SUPERGRAPH_CONFIG="/output/supergraph-config.yaml"
-SUPERGRAPH="/output/supergraph.graphql"
+SUPERGRAPH="/supergraph/supergraph.graphql"
+SUPERGRAPH_OUTPUT="/output/supergraph.graphql"
 
 # Load subgraphs from YAML
 declare -A SUBGRAPHS
@@ -38,13 +39,12 @@ for name in "${!SUBGRAPHS[@]}"; do
   echo "      file: /output/${name}.graphql" >> "$SUPERGRAPH_CONFIG"
 done
 
-# Compose full private supergraph
+# Compose full supergraph
 echo "🧩 Composing supergraph..."
 rover supergraph compose \
   --elv2-license accept \
   --config "$SUPERGRAPH_CONFIG" \
-  > "$SUPERGRAPH"
-
+  | tee "$SUPERGRAPH" > "$SUPERGRAPH_OUTPUT"
 
 echo "✅ Done!"
 echo "   - Supergraph:      $SUPERGRAPH"

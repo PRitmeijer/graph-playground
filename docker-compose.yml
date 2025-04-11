@@ -45,6 +45,8 @@ services:
     build: ./router
     ports:
       - "4000:4000"
+    volumes:
+      - supergraph:/dist/schema
     command:
       - -c
       - /dist/config/router.yaml
@@ -56,6 +58,7 @@ services:
       context: ./rover/docker
       dockerfile: Dockerfile
     volumes:
+      - supergraph:/supergraph
       - ./rover/output:/output
       - ./rover/config/:/config/
                 
@@ -65,4 +68,5 @@ networks:
 
 volumes:
   db_data:
+  supergraph:
             
