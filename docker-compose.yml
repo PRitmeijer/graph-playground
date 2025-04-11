@@ -55,12 +55,11 @@ services:
 
   rover:
     build:
-      context: ./rover/docker
-      dockerfile: Dockerfile
+      context: ./rover
+      dockerfile: ./docker/Dockerfile
     volumes:
       - supergraph:/supergraph
       - ./rover/output:/output
-      - ./rover/config/:/config/
                 
 networks:
   backend:

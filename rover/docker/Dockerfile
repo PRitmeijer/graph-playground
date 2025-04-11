@@ -16,10 +16,11 @@ RUN curl -sSL https://rover.apollo.dev/nix/latest | sh
 ENV PATH="/root/.rover/bin:$PATH"
 
 # Create folders
-RUN mkdir -p /output /config
+COPY /config /config
+RUN mkdir -p /output
 
 # Copy script and set working dir
-COPY fetch-schemas.sh /app/fetch-schemas.sh
+COPY /docker/fetch-schemas.sh /app/fetch-schemas.sh
 WORKDIR /app
 RUN chmod +x fetch-schemas.sh
 
