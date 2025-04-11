@@ -2,9 +2,8 @@
 set -e
 
 SUBGRAPHS_FILE="/config/subgraphs.yaml"
-SUPERGRAPH_CONFIG="/output/supergraph-config-private.yaml"
-SUPERGRAPH="/output/supergraph-private.graphql"
-PUBLIC_CONTRACT_SUBGRAPH="/output/public-subgraph.graphql"
+SUPERGRAPH_CONFIG="/output/supergraph-config.yaml"
+SUPERGRAPH="/output/supergraph.graphql"
 
 # Load subgraphs from YAML
 declare -A SUBGRAPHS
@@ -40,20 +39,12 @@ for name in "${!SUBGRAPHS[@]}"; do
 done
 
 # Compose full private supergraph
-echo "🧩 Composing private supergraph..."
+echo "🧩 Composing supergraph..."
 rover supergraph compose \
   --elv2-license accept \
   --config "$SUPERGRAPH_CONFIG" \
   > "$SUPERGRAPH"
 
-# Extract public contract (subgraph)
-echo "🔐 Extracting public contract subgraph..."
-rover contract compose \
-  --supergraph "$SUPERGRAPH" \
-  --contract-name public \
-  --config "$SUPERGRAPH_CONFIG" \
-  > "$PUBLIC_CONTRACT_SUBGRAPH"
 
 echo "✅ Done!"
-echo "   - Private Supergraph:      $SUPERGRAPH"
-echo "   - Public Subgraph (Contract): $PUBLIC_CONTRACT_SUBGRAPH"
+echo "   - Supergraph:      $SUPERGRAPH"

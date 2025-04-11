@@ -1,0 +1,6 @@
+federation_version: 2
+subgraphs:
+  mock:
+    routing_url: http://mock:8000/graphql/
+    schema:
+      file: /output/mock.graphql

@@ -1,3 +1,2 @@
 subgraphs:
   mock: http://mock:8000/graphql/
-  integrations: http://integrations:8000/graphql/

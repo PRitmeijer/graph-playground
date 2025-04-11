@@ -1,0 +1,55 @@
+type CallLogType {
+  user: UserType!
+  callQueue: CallQueueType
+  id: ID!
+  startTime: DateTime!
+  endTime: DateTime!
+  durationSeconds: Int!
+  callerId: String!
+  calleeId: String!
+  direction: String!
+}
+
+type CallQueueType {
+  members: [UserType!]!
+  id: ID!
+  name: String!
+}
+
+type ContactType {
+  user: UserType
+  id: ID!
+  firstname: String!
+  prefixlastname: String
+  lastname: String!
+  mobileNr: String
+  landlineNr: String
+  department: String
+  type: String!
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type Query {
+  _service: _Service!
+  users: [UserType!]!
+  callLogs: [CallLogType!]!
+  callQueues: [CallQueueType!]!
+  contacts: [ContactType!]!
+}
+
+type UserType {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  isActive: Boolean!
+  dateJoined: DateTime!
+}
+
+scalar _Any
+
+type _Service {
+  sdl: String!
+}

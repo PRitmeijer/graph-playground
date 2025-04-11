@@ -2,7 +2,7 @@
 
 from .base import *
 
-DEBUG = False
+DEBUG = True
 
 # Use environment variables or specific DB configurations for production
 DATABASES = {
@@ -22,3 +22,19 @@ if 'makemigrations' in sys.argv or 'migrate' in sys.argv or 'loaddata' in sys.ar
     DATABASES['default']['PASSWORD'] = os.getenv('POSTGRES_PASSWORD', 'migrate_password')
 
 # Additional production settings like security and optimizations
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+         'console': {
+              'class': 'logging.StreamHandler',
+         },
+    },
+    'loggers': {
+         # This configures the root logger; you can also set up your module specifically.
+         '': {
+              'handlers': ['console'],
+              'level': 'DEBUG',
+         },
+    },
+}
