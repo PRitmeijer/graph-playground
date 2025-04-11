@@ -1,14 +1,14 @@
 services:
-  mock:
+  phonehub:
     build: 
-      context: ./backend/mock
+      context: ./backend/phonehub
       dockerfile: ./docker/Dockerfile
     ports:
       - "8001:8001"
     environment:
       - SECRET_KEY=changeme
       - DEBUG=True
-      - ALLOWED_HOSTS=localhost,127.0.0.1,mock
+      - ALLOWED_HOSTS=localhost,127.0.0.1,phonehub
       - KEYS_DIR=/keys
       - POSTGRES_DB=db
       - POSTGRES_HOST=db

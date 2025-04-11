@@ -1,6 +1,6 @@
 federation_version: 2
 subgraphs:
-  mock:
-    routing_url: http://mock:8001/graphql/
+  phonehub:
+    routing_url: http://phonehub:8001/graphql/
     schema:
-      file: /output/mock.graphql
+      file: /output/phonehub.graphql

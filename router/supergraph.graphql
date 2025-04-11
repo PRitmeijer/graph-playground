@@ -20,7 +20,7 @@ directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on
 directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
 
 type CallLogType
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   user: UserType!
   callQueue: CallQueueType
@@ -34,7 +34,7 @@ type CallLogType
 }
 
 type CallQueueType
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   members: [UserType!]!
   id: ID!
@@ -42,7 +42,7 @@ type CallQueueType
 }
 
 type ContactType
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   user: UserType
   id: ID!
@@ -56,7 +56,7 @@ type ContactType
 }
 
 type ContactTypeOffsetPaginated
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   pageInfo: OffsetPaginationInfo!
 
@@ -69,12 +69,12 @@ type ContactTypeOffsetPaginated
 
 """Date with time (isoformat)"""
 scalar DateTime
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 
 scalar join__FieldSet
 
 enum join__Graph {
-  MOCK @join__graph(name: "mock", url: "http://mock:8001/graphql/")
+  PHONEHUB @join__graph(name: "phonehub", url: "http://phonehub:8001/graphql/")
 }
 
 scalar link__Import
@@ -92,21 +92,21 @@ enum link__Purpose {
 }
 
 type OffsetPaginationInfo
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   offset: Int!
   limit: Int
 }
 
 input OffsetPaginationInput
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   offset: Int! = 0
   limit: Int
 }
 
 type Query
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   users: [UserType!]!
   callLogs(pagination: OffsetPaginationInput): [CallLogType!]!
@@ -115,7 +115,7 @@ type Query
 }
 
 type UserType
-  @join__type(graph: MOCK)
+  @join__type(graph: PHONEHUB)
 {
   id: ID!
   email: String!

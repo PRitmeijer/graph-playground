@@ -1,2 +1,2 @@
 subgraphs:
-  mock: http://mock:8001/graphql/
+  phonehub: http://phonehub:8001/graphql/

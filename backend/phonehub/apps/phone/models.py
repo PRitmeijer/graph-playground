@@ -59,7 +59,7 @@ class CallQueue(models.Model):
     def __str__(self):
         return self.name
 
-# --- Contact Model ---
+
 class Contact(models.Model):
     CONTACT_TYPE_CHOICES = [
         ('internal', 'Internal'),
@@ -71,51 +71,64 @@ class Contact(models.Model):
         max_length=100,
         help_text="First name"
     )
-    # This field can store any prefix of the last name (e.g., 'van', 'de', etc.)
+
     prefixlastname = models.CharField(
         max_length=100,
         blank=True,
         null=True,
         help_text="Prefix of the last name (if any)"
     )
+
     lastname = models.CharField(
         max_length=100,
         help_text="Last name"
     )
+
     mobile_nr = models.CharField(
         max_length=20,
         blank=True,
         null=True,
         help_text="Mobile phone number"
     )
+
     landline_nr = models.CharField(
         max_length=20,
         blank=True,
         null=True,
         help_text="Landline number or extension"
     )
-    # Only for internal contacts: link a contact to a User.
-    user = models.ForeignKey(
-        "core.CustomUser",
-        on_delete=models.SET_NULL,
-        null=True,
+
+    # For internal contacts, we link directly to the local user.
+    # For non‑internal contacts (external/personal) this field can be left empty.
+    user = models.IntegerField(
         blank=True,
-        related_name='contacts',
+        null=True,
         help_text="Link to a User for internal contacts"
     )
+
     department = models.CharField(
         max_length=100,
         blank=True,
         null=True,
         help_text="Department name (if applicable)"
     )
+
     type = models.CharField(
         max_length=10,
         choices=CONTACT_TYPE_CHOICES,
         help_text="Contact type: internal, external, or personal"
     )
 
+    personal_contact_owner = models.IntegerField(
+        blank=True,
+        null=True,
+        help_text="User ID indicating the owner of this personal contact"
+    )
+
+    def initials(self):
+        """Return the initials of the contact in uppercase, ensuring no null values"""
+        return f"{(self.firstname or '')[:1].upper()}{(self.lastname or '')[:1].upper()}"
+    
     def __str__(self):
-        # Format the contact name in a readable manner
-        prefix = f"{self.prefixlastname} " if self.prefixlastname else ""
-        return f"{self.firstname} {prefix}{self.lastname}"
+        """Return a string representation of the contact"""
+        return f"{self.firstname or ''} {self.prefix or ''}{self.lastname or ''}"
