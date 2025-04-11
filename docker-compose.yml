@@ -49,7 +49,7 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./router/router.yaml:/dist/config/router.yaml
+      - ./router/:/dist/config/
       - ./router/supergraph.graphql:/dist/schema/supergraph.graphql
     command:
       - -c
