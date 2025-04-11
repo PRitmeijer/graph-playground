@@ -12,6 +12,4 @@ homepage:
   enabled: false
 
 cors:
-  origins:
-    - http://localhost:4000
-  allow_credentials: true
+  allow_any_origin: true
