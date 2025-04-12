@@ -1,0 +1,509 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.4", for: EXECUTION)
+{
+  query: Query
+}
+
+directive @join__directive(graphs: [join__Graph!], name: String!, args: join__DirectiveArguments) repeatable on SCHEMA | OBJECT | INTERFACE | FIELD_DEFINITION
+
+directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean, overrideLabel: String) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+enum CallDirectionEnum
+  @join__type(graph: PHONEHUB)
+{
+  INCOMING @join__enumValue(graph: PHONEHUB)
+  OUTGOING @join__enumValue(graph: PHONEHUB)
+}
+
+input CallDirectionEnumFilterLookup
+  @join__type(graph: PHONEHUB)
+{
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: CallDirectionEnum
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [CallDirectionEnum!]
+
+  """Case-insensitive exact match. Filter will be skipped on `null` value"""
+  iExact: CallDirectionEnum
+
+  """
+  Case-sensitive containment test. Filter will be skipped on `null` value
+  """
+  contains: CallDirectionEnum
+
+  """
+  Case-insensitive containment test. Filter will be skipped on `null` value
+  """
+  iContains: CallDirectionEnum
+
+  """Case-sensitive starts-with. Filter will be skipped on `null` value"""
+  startsWith: CallDirectionEnum
+
+  """Case-insensitive starts-with. Filter will be skipped on `null` value"""
+  iStartsWith: CallDirectionEnum
+
+  """Case-sensitive ends-with. Filter will be skipped on `null` value"""
+  endsWith: CallDirectionEnum
+
+  """Case-insensitive ends-with. Filter will be skipped on `null` value"""
+  iEndsWith: CallDirectionEnum
+
+  """
+  Case-sensitive regular expression match. Filter will be skipped on `null` value
+  """
+  regex: CallDirectionEnum
+
+  """
+  Case-insensitive regular expression match. Filter will be skipped on `null` value
+  """
+  iRegex: CallDirectionEnum
+}
+
+"""
+CallLog(id, start_time, end_time, duration_seconds, caller_id, callee_id, direction, call_queue, user)
+"""
+input CallLogFilter
+  @join__type(graph: PHONEHUB)
+{
+  id: IDBaseFilterLookup
+
+  """Call start time"""
+  startTime: DatetimeDatetimeFilterLookup
+
+  """Call end time"""
+  endTime: DatetimeDatetimeFilterLookup
+
+  """Call duration in seconds"""
+  durationSeconds: IntComparisonFilterLookup
+
+  """Direction of the call (incoming or outgoing)"""
+  direction: CallDirectionEnumFilterLookup
+
+  """Identifier for the caller (could be a phone number or reference ID)"""
+  callerId: StrFilterLookup
+  AND: CallLogFilter
+  OR: CallLogFilter
+  NOT: CallLogFilter
+  DISTINCT: Boolean
+}
+
+"""
+CallLog(id, start_time, end_time, duration_seconds, caller_id, callee_id, direction, call_queue, user)
+"""
+type CallLogType
+  @join__type(graph: PHONEHUB)
+{
+  """User associated with this call log entry"""
+  user: PhoneUserType!
+
+  """Call queue associated with the call, if any"""
+  callQueue: CallQueueType
+  id: ID!
+
+  """Call start time"""
+  startTime: DateTime!
+
+  """Call end time"""
+  endTime: DateTime!
+
+  """Call duration in seconds"""
+  durationSeconds: Int!
+
+  """Identifier for the caller (could be a phone number or reference ID)"""
+  callerId: String!
+
+  """Identifier for the callee (could be a phone number or reference ID)"""
+  calleeId: String!
+
+  """Direction of the call (incoming or outgoing)"""
+  direction: CallDirectionEnum!
+}
+
+type CallLogTypeOffsetPaginated
+  @join__type(graph: PHONEHUB)
+{
+  pageInfo: OffsetPaginationInfo!
+
+  """Total count of existing results."""
+  totalCount: Int!
+
+  """List of paginated results."""
+  results: [CallLogType!]!
+}
+
+"""CallQueue(id, name)"""
+input CallQueueFilter
+  @join__type(graph: PHONEHUB)
+{
+  id: IDBaseFilterLookup
+
+  """Name of the call queue"""
+  name: StrFilterLookup
+  AND: CallQueueFilter
+  OR: CallQueueFilter
+  NOT: CallQueueFilter
+  DISTINCT: Boolean
+}
+
+"""CallQueue(id, name)"""
+type CallQueueType
+  @join__type(graph: PHONEHUB)
+{
+  """Users that are members of this call queue"""
+  members(pagination: OffsetPaginationInput): [PhoneUserType!]!
+  id: ID!
+
+  """Name of the call queue"""
+  name: String!
+}
+
+type CallQueueTypeOffsetPaginated
+  @join__type(graph: PHONEHUB)
+{
+  pageInfo: OffsetPaginationInfo!
+
+  """Total count of existing results."""
+  totalCount: Int!
+
+  """List of paginated results."""
+  results: [CallQueueType!]!
+}
+
+"""
+Contact(id, firstname, prefixlastname, lastname, mobile_nr, landline_nr, user, department, type, personal_contact_owner)
+"""
+type ContactType
+  @join__type(graph: PHONEHUB)
+{
+  """Link to the user"""
+  user: PhoneUserType
+  id: ID!
+
+  """First name"""
+  firstname: String!
+
+  """Prefix of the last name (if any)"""
+  prefixlastname: String
+
+  """Last name"""
+  lastname: String!
+
+  """Mobile phone number"""
+  mobileNr: String
+
+  """Landline number or extension"""
+  landlineNr: String
+
+  """Department name (if applicable)"""
+  department: String
+
+  """Contact type: internal, external, or personal"""
+  type: ContactTypeEnum!
+}
+
+enum ContactTypeEnum
+  @join__type(graph: PHONEHUB)
+{
+  INTERNAL @join__enumValue(graph: PHONEHUB)
+  EXTERNAL @join__enumValue(graph: PHONEHUB)
+  PERSONAL @join__enumValue(graph: PHONEHUB)
+}
+
+type ContactTypeOffsetPaginated
+  @join__type(graph: PHONEHUB)
+{
+  pageInfo: OffsetPaginationInfo!
+
+  """Total count of existing results."""
+  totalCount: Int!
+
+  """List of paginated results."""
+  results: [ContactType!]!
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+  @join__type(graph: GOVERNANCE)
+  @join__type(graph: PHONEHUB)
+
+input DatetimeDatetimeFilterLookup
+  @join__type(graph: PHONEHUB)
+{
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: DateTime
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [DateTime!]
+
+  """Greater than. Filter will be skipped on `null` value"""
+  gt: DateTime
+
+  """Greater than or equal to. Filter will be skipped on `null` value"""
+  gte: DateTime
+
+  """Less than. Filter will be skipped on `null` value"""
+  lt: DateTime
+
+  """Less than or equal to. Filter will be skipped on `null` value"""
+  lte: DateTime
+
+  """Inclusive range test (between)"""
+  range: DatetimeRangeLookup
+  year: IntComparisonFilterLookup
+  month: IntComparisonFilterLookup
+  day: IntComparisonFilterLookup
+  weekDay: IntComparisonFilterLookup
+  isoWeekDay: IntComparisonFilterLookup
+  week: IntComparisonFilterLookup
+  isoYear: IntComparisonFilterLookup
+  quarter: IntComparisonFilterLookup
+  hour: IntComparisonFilterLookup
+  minute: IntComparisonFilterLookup
+  second: IntComparisonFilterLookup
+  date: IntComparisonFilterLookup
+  time: IntComparisonFilterLookup
+}
+
+input DatetimeRangeLookup
+  @join__type(graph: PHONEHUB)
+{
+  start: DateTime = null
+  end: DateTime = null
+}
+
+type DjangoModelType
+  @join__type(graph: GOVERNANCE)
+{
+  pk: ID!
+}
+
+input IDBaseFilterLookup
+  @join__type(graph: PHONEHUB)
+{
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: ID
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [ID!]
+}
+
+input IntComparisonFilterLookup
+  @join__type(graph: PHONEHUB)
+{
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: Int
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [Int!]
+
+  """Greater than. Filter will be skipped on `null` value"""
+  gt: Int
+
+  """Greater than or equal to. Filter will be skipped on `null` value"""
+  gte: Int
+
+  """Less than. Filter will be skipped on `null` value"""
+  lt: Int
+
+  """Less than or equal to. Filter will be skipped on `null` value"""
+  lte: Int
+
+  """Inclusive range test (between)"""
+  range: IntRangeLookup
+}
+
+input IntRangeLookup
+  @join__type(graph: PHONEHUB)
+{
+  start: Int = null
+  end: Int = null
+}
+
+scalar join__DirectiveArguments
+
+scalar join__FieldSet
+
+enum join__Graph {
+  GOVERNANCE @join__graph(name: "governance", url: "http://governance:8001/graphql/")
+  PHONEHUB @join__graph(name: "phonehub", url: "http://phonehub:8002/graphql/")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type OffsetPaginationInfo
+  @join__type(graph: PHONEHUB)
+{
+  offset: Int!
+  limit: Int
+}
+
+input OffsetPaginationInput
+  @join__type(graph: PHONEHUB)
+{
+  offset: Int! = 0
+  limit: Int
+}
+
+"""
+Model to represent a user in the phone system.
+Reference object to the core user in microservice Governance.
+Gets attached as user in the middleware.
+Not to be confused with Django Users.
+"""
+type PhoneUserType
+  @join__type(graph: GOVERNANCE, key: "externalId", extension: true)
+  @join__type(graph: PHONEHUB)
+{
+  """The user this phone user belongs to"""
+  externalId: Int!
+  user: UserType! @join__field(graph: GOVERNANCE)
+  id: ID! @join__field(graph: PHONEHUB)
+
+  """The PPS ID of the user"""
+  ppsId: Int! @join__field(graph: PHONEHUB)
+}
+
+type Query
+  @join__type(graph: GOVERNANCE)
+  @join__type(graph: PHONEHUB)
+{
+  users: [UserType!]! @join__field(graph: GOVERNANCE)
+  userStatuses: [UserStatusType!]! @join__field(graph: GOVERNANCE)
+  phoneUsers(pagination: OffsetPaginationInput): [PhoneUserType!]! @join__field(graph: PHONEHUB)
+  callLogs(pagination: OffsetPaginationInput, filters: CallLogFilter): CallLogTypeOffsetPaginated! @join__field(graph: PHONEHUB)
+  callQueues(pagination: OffsetPaginationInput, filters: CallQueueFilter): CallQueueTypeOffsetPaginated! @join__field(graph: PHONEHUB)
+  contacts(search: String = null, pagination: OffsetPaginationInput): ContactTypeOffsetPaginated! @join__field(graph: PHONEHUB)
+}
+
+input StrFilterLookup
+  @join__type(graph: PHONEHUB)
+{
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: String
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [String!]
+
+  """Case-insensitive exact match. Filter will be skipped on `null` value"""
+  iExact: String
+
+  """
+  Case-sensitive containment test. Filter will be skipped on `null` value
+  """
+  contains: String
+
+  """
+  Case-insensitive containment test. Filter will be skipped on `null` value
+  """
+  iContains: String
+
+  """Case-sensitive starts-with. Filter will be skipped on `null` value"""
+  startsWith: String
+
+  """Case-insensitive starts-with. Filter will be skipped on `null` value"""
+  iStartsWith: String
+
+  """Case-sensitive ends-with. Filter will be skipped on `null` value"""
+  endsWith: String
+
+  """Case-insensitive ends-with. Filter will be skipped on `null` value"""
+  iEndsWith: String
+
+  """
+  Case-sensitive regular expression match. Filter will be skipped on `null` value
+  """
+  regex: String
+
+  """
+  Case-insensitive regular expression match. Filter will be skipped on `null` value
+  """
+  iRegex: String
+}
+
+"""UserStatus(id, user, reason, mode, updated_at)"""
+type UserStatusType
+  @join__type(graph: GOVERNANCE)
+{
+  id: ID!
+
+  """The user this status belongs to."""
+  user: DjangoModelType!
+
+  """
+  Reason for the user's mode, e.g., 'lunch', 'available', 'training', 'unavailable'.
+  """
+  reason: String!
+
+  """
+  System mode of the user's activity, e.g., 'idle', 'calling', 'logged_out'.
+  """
+  mode: String!
+  updatedAt: DateTime!
+}
+
+"""
+User(id, password, last_login, is_superuser, username, is_staff, email, first_name, prefix_last_name, last_name, is_active, date_joined)
+"""
+type UserType
+  @join__type(graph: GOVERNANCE)
+{
+  status: UserStatusType
+  id: ID!
+  email: String!
+  firstName: String!
+  prefixLastName: String!
+  lastName: String!
+  isActive: Boolean!
+  dateJoined: DateTime!
+}

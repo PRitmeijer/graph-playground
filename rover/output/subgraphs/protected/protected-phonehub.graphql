@@ -1,0 +1,379 @@
+enum CallDirectionEnum {
+  INCOMING
+  OUTGOING
+}
+
+input CallDirectionEnumFilterLookup {
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: CallDirectionEnum
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [CallDirectionEnum!]
+
+  """Case-insensitive exact match. Filter will be skipped on `null` value"""
+  iExact: CallDirectionEnum
+
+  """
+  Case-sensitive containment test. Filter will be skipped on `null` value
+  """
+  contains: CallDirectionEnum
+
+  """
+  Case-insensitive containment test. Filter will be skipped on `null` value
+  """
+  iContains: CallDirectionEnum
+
+  """Case-sensitive starts-with. Filter will be skipped on `null` value"""
+  startsWith: CallDirectionEnum
+
+  """Case-insensitive starts-with. Filter will be skipped on `null` value"""
+  iStartsWith: CallDirectionEnum
+
+  """Case-sensitive ends-with. Filter will be skipped on `null` value"""
+  endsWith: CallDirectionEnum
+
+  """Case-insensitive ends-with. Filter will be skipped on `null` value"""
+  iEndsWith: CallDirectionEnum
+
+  """
+  Case-sensitive regular expression match. Filter will be skipped on `null` value
+  """
+  regex: CallDirectionEnum
+
+  """
+  Case-insensitive regular expression match. Filter will be skipped on `null` value
+  """
+  iRegex: CallDirectionEnum
+}
+
+"""
+CallLog(id, start_time, end_time, duration_seconds, caller_id, callee_id, direction, call_queue, user)
+"""
+input CallLogFilter {
+  id: IDBaseFilterLookup
+
+  """Call start time"""
+  startTime: DatetimeDatetimeFilterLookup
+
+  """Call end time"""
+  endTime: DatetimeDatetimeFilterLookup
+
+  """Call duration in seconds"""
+  durationSeconds: IntComparisonFilterLookup
+
+  """Direction of the call (incoming or outgoing)"""
+  direction: CallDirectionEnumFilterLookup
+
+  """Identifier for the caller (could be a phone number or reference ID)"""
+  callerId: StrFilterLookup
+  AND: CallLogFilter
+  OR: CallLogFilter
+  NOT: CallLogFilter
+  DISTINCT: Boolean
+}
+
+"""
+CallLog(id, start_time, end_time, duration_seconds, caller_id, callee_id, direction, call_queue, user)
+"""
+type CallLogType {
+  """User associated with this call log entry"""
+  user: PhoneUserType!
+
+  """Call queue associated with the call, if any"""
+  callQueue: CallQueueType
+  id: ID!
+
+  """Call start time"""
+  startTime: DateTime!
+
+  """Call end time"""
+  endTime: DateTime!
+
+  """Call duration in seconds"""
+  durationSeconds: Int!
+
+  """Identifier for the caller (could be a phone number or reference ID)"""
+  callerId: String!
+
+  """Identifier for the callee (could be a phone number or reference ID)"""
+  calleeId: String!
+
+  """Direction of the call (incoming or outgoing)"""
+  direction: CallDirectionEnum!
+}
+
+type CallLogTypeOffsetPaginated {
+  pageInfo: OffsetPaginationInfo!
+
+  """Total count of existing results."""
+  totalCount: Int!
+
+  """List of paginated results."""
+  results: [CallLogType!]!
+}
+
+"""CallQueue(id, name)"""
+input CallQueueFilter {
+  id: IDBaseFilterLookup
+
+  """Name of the call queue"""
+  name: StrFilterLookup
+  AND: CallQueueFilter
+  OR: CallQueueFilter
+  NOT: CallQueueFilter
+  DISTINCT: Boolean
+}
+
+"""CallQueue(id, name)"""
+type CallQueueType {
+  """Users that are members of this call queue"""
+  members(pagination: OffsetPaginationInput): [PhoneUserType!]!
+  id: ID!
+
+  """Name of the call queue"""
+  name: String!
+}
+
+type CallQueueTypeOffsetPaginated {
+  pageInfo: OffsetPaginationInfo!
+
+  """Total count of existing results."""
+  totalCount: Int!
+
+  """List of paginated results."""
+  results: [CallQueueType!]!
+}
+
+"""
+Contact(id, firstname, prefixlastname, lastname, mobile_nr, landline_nr, user, department, type, personal_contact_owner)
+"""
+type ContactType {
+  """Link to the user"""
+  user: PhoneUserType
+  id: ID!
+
+  """First name"""
+  firstname: String!
+
+  """Prefix of the last name (if any)"""
+  prefixlastname: String
+
+  """Last name"""
+  lastname: String!
+
+  """Mobile phone number"""
+  mobileNr: String
+
+  """Landline number or extension"""
+  landlineNr: String
+
+  """Department name (if applicable)"""
+  department: String
+
+  """Contact type: internal, external, or personal"""
+  type: ContactTypeEnum!
+}
+
+enum ContactTypeEnum {
+  INTERNAL
+  EXTERNAL
+  PERSONAL
+}
+
+type ContactTypeOffsetPaginated {
+  pageInfo: OffsetPaginationInfo!
+
+  """Total count of existing results."""
+  totalCount: Int!
+
+  """List of paginated results."""
+  results: [ContactType!]!
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+input DatetimeDatetimeFilterLookup {
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: DateTime
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [DateTime!]
+
+  """Greater than. Filter will be skipped on `null` value"""
+  gt: DateTime
+
+  """Greater than or equal to. Filter will be skipped on `null` value"""
+  gte: DateTime
+
+  """Less than. Filter will be skipped on `null` value"""
+  lt: DateTime
+
+  """Less than or equal to. Filter will be skipped on `null` value"""
+  lte: DateTime
+
+  """Inclusive range test (between)"""
+  range: DatetimeRangeLookup
+  year: IntComparisonFilterLookup
+  month: IntComparisonFilterLookup
+  day: IntComparisonFilterLookup
+  weekDay: IntComparisonFilterLookup
+  isoWeekDay: IntComparisonFilterLookup
+  week: IntComparisonFilterLookup
+  isoYear: IntComparisonFilterLookup
+  quarter: IntComparisonFilterLookup
+  hour: IntComparisonFilterLookup
+  minute: IntComparisonFilterLookup
+  second: IntComparisonFilterLookup
+  date: IntComparisonFilterLookup
+  time: IntComparisonFilterLookup
+}
+
+input DatetimeRangeLookup {
+  start: DateTime = null
+  end: DateTime = null
+}
+
+input IDBaseFilterLookup {
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: ID
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [ID!]
+}
+
+input IntComparisonFilterLookup {
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: Int
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [Int!]
+
+  """Greater than. Filter will be skipped on `null` value"""
+  gt: Int
+
+  """Greater than or equal to. Filter will be skipped on `null` value"""
+  gte: Int
+
+  """Less than. Filter will be skipped on `null` value"""
+  lt: Int
+
+  """Less than or equal to. Filter will be skipped on `null` value"""
+  lte: Int
+
+  """Inclusive range test (between)"""
+  range: IntRangeLookup
+}
+
+input IntRangeLookup {
+  start: Int = null
+  end: Int = null
+}
+
+type OffsetPaginationInfo {
+  offset: Int!
+  limit: Int
+}
+
+input OffsetPaginationInput {
+  offset: Int! = 0
+  limit: Int
+}
+
+"""
+Model to represent a user in the phone system.
+Reference object to the core user in microservice Governance.
+Gets attached as user in the middleware.
+Not to be confused with Django Users.
+"""
+type PhoneUserType {
+  id: ID!
+
+  """The user this phone user belongs to"""
+  externalId: Int!
+
+  """The PPS ID of the user"""
+  ppsId: Int!
+}
+
+type Query {
+  _service: _Service!
+  phoneUsers(pagination: OffsetPaginationInput): [PhoneUserType!]!
+  callLogs(pagination: OffsetPaginationInput, filters: CallLogFilter): CallLogTypeOffsetPaginated!
+  callQueues(pagination: OffsetPaginationInput, filters: CallQueueFilter): CallQueueTypeOffsetPaginated!
+  contacts(search: String = null, pagination: OffsetPaginationInput): ContactTypeOffsetPaginated!
+}
+
+input StrFilterLookup {
+  """Exact match. Filter will be skipped on `null` value"""
+  exact: String
+
+  """Assignment test. Filter will be skipped on `null` value"""
+  isNull: Boolean
+
+  """
+  Exact match of items in a given list. Filter will be skipped on `null` value
+  """
+  inList: [String!]
+
+  """Case-insensitive exact match. Filter will be skipped on `null` value"""
+  iExact: String
+
+  """
+  Case-sensitive containment test. Filter will be skipped on `null` value
+  """
+  contains: String
+
+  """
+  Case-insensitive containment test. Filter will be skipped on `null` value
+  """
+  iContains: String
+
+  """Case-sensitive starts-with. Filter will be skipped on `null` value"""
+  startsWith: String
+
+  """Case-insensitive starts-with. Filter will be skipped on `null` value"""
+  iStartsWith: String
+
+  """Case-sensitive ends-with. Filter will be skipped on `null` value"""
+  endsWith: String
+
+  """Case-insensitive ends-with. Filter will be skipped on `null` value"""
+  iEndsWith: String
+
+  """
+  Case-sensitive regular expression match. Filter will be skipped on `null` value
+  """
+  regex: String
+
+  """
+  Case-insensitive regular expression match. Filter will be skipped on `null` value
+  """
+  iRegex: String
+}
+
+scalar _Any
+
+type _Service {
+  sdl: String!
+}

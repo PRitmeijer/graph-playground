@@ -15,6 +15,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-ceo2h7*^!dmqj6+d$(pkita)zy
 DEBUG = os.getenv("DEBUG", default=False)
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+STRAWBERRY_DJANGO = {
+    "FIELD_DESCRIPTION_FROM_HELP_TEXT": True,
+    "TYPE_DESCRIPTION_FROM_MODEL_DOCSTRING": True,
+    "PAGINATION_DEFAULT_LIMIT": 250,
+}
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'strawberry_django',
     'django_code_generator',
     'core.apps.CoreConfig',

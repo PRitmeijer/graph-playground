@@ -52,7 +52,7 @@ compose_supergraph() {
     url="${SUBGRAPHS[$name]}"
     local file="${type_subgraph_dir}/${type}-${name}.graphql"
     echo "🔍 Introspecting ${type} subgraph '$name' at $url"
-    if rover subgraph introspect "$url" > "$file.tmp" 2>/dev/null; then
+    if rover subgraph introspect --header "X-Rover-Introspection: 1" "$url" > "$file.tmp" 2>/dev/null; then
       mv "$file.tmp" "$file"
       echo "✅ Introspection for '$name' successful: $file"
     else
@@ -84,4 +84,4 @@ compose_supergraph() {
 }
 
 compose_supergraph "public"
-compose_supergraph "private"
+compose_supergraph "protected"

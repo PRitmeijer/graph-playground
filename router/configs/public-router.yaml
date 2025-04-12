@@ -13,3 +13,12 @@ homepage:
 
 cors:
   allow_any_origin: true
+
+headers:
+  all:
+    request:
+      - propagate:
+          named: "X-User-ID"
+          default: "2"
+      - remove:
+          named: "X-Rover-Introspection"

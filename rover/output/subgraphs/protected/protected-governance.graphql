@@ -21,14 +21,28 @@ type Query {
   userStatuses: [UserStatusType!]!
 }
 
+"""UserStatus(id, user, reason, mode, updated_at)"""
 type UserStatusType {
   id: ID!
+
+  """The user this status belongs to."""
   user: DjangoModelType!
+
+  """
+  Reason for the user's mode, e.g., 'lunch', 'available', 'training', 'unavailable'.
+  """
   reason: String!
+
+  """
+  System mode of the user's activity, e.g., 'idle', 'calling', 'logged_out'.
+  """
   mode: String!
   updatedAt: DateTime!
 }
 
+"""
+User(id, password, last_login, is_superuser, username, is_staff, email, first_name, prefix_last_name, last_name, is_active, date_joined)
+"""
 type UserType {
   status: UserStatusType
   id: ID!

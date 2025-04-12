@@ -1,8 +1,10 @@
-from core.models import PhoneUser
 from strawberry.django.views import AsyncGraphQLView
 from asgiref.sync import sync_to_async
 from graphql import GraphQLError
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class ProtectedGraphQLView(AsyncGraphQLView):
     async def get_context(self, request, response):
@@ -38,7 +40,7 @@ class ProtectedGraphQLView(AsyncGraphQLView):
         user = None
 
         try:
-            user = await sync_to_async(PhoneUser.objects.get)(external_id=user_id)
+            user = await sync_to_async(User.objects.get)(pk=user_id)
         except ObjectDoesNotExist:
             raise GraphQLError(
                 message="Unauthorized: User not found",

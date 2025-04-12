@@ -1,9 +1,17 @@
 from django.db import models
+from django_choices_field import TextChoicesField
+
 from core.models import PhoneUser
+
+class CallDirectionEnum(models.TextChoices):
+    INCOMING = 'incoming', 'Incoming'
+    OUTGOING = 'outgoing', 'Outgoing'
 
 # Create your models here.
 class CallLog(models.Model):
-    start_time = models.DateTimeField(help_text="Call start time")
+    start_time = models.DateTimeField(
+        db_index=True,
+        help_text="Call start time")
     end_time = models.DateTimeField(help_text="Call end time")
     duration_seconds = models.PositiveIntegerField(help_text="Call duration in seconds")
     caller_id = models.CharField(
@@ -18,11 +26,11 @@ class CallLog(models.Model):
         ('incoming', 'Incoming'),
         ('outgoing', 'Outgoing')
     ]
-    direction = models.CharField(
-        max_length=10,
-        choices=DIRECTION_CHOICES,
-        help_text="Direction of the call"
+    direction = TextChoicesField(
+        choices_enum=CallDirectionEnum,
+        help_text="Direction of the call (incoming or outgoing)",
     )
+    
     # Optional link to a call queue; if the call did not go through a queue, this may be empty.
     call_queue = models.ForeignKey(
         'CallQueue',
@@ -44,6 +52,9 @@ class CallLog(models.Model):
 
     def __str__(self):
         return f"Call {self.pk}: {self.caller_id} -> {self.callee_id}"
+    
+    class Meta:
+        ordering = ['-start_time']
 
 # --- CallQueue Model ---
 class CallQueue(models.Model):
@@ -63,14 +74,12 @@ class CallQueue(models.Model):
     def __str__(self):
         return self.name
 
+class ContactTypeEnum(models.TextChoices):
+    INTERNAL = 'internal', 'Internal'
+    EXTERNAL = 'external', 'External'
+    PERSONAL = 'personal', 'Personal'
 
 class Contact(models.Model):
-    CONTACT_TYPE_CHOICES = [
-        ('internal', 'Internal'),
-        ('external', 'External'),
-        ('personal', 'Personal')
-    ]
-
     firstname = models.CharField(
         max_length=100,
         help_text="First name"
@@ -121,11 +130,10 @@ class Contact(models.Model):
         help_text="Department name (if applicable)"
     )
 
-    type = models.CharField(
-        max_length=10,
-        choices=CONTACT_TYPE_CHOICES,
+    type = TextChoicesField(
+        choices_enum=ContactTypeEnum,
         db_index=True,
-        help_text="Contact type: internal, external, or personal"
+        help_text="Contact type: internal, external, or personal",
     )
 
     personal_contact_owner = models.ForeignKey(

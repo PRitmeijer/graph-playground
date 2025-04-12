@@ -84,6 +84,7 @@ services:
         start_period: 5s
         timeout: 5s
   
+  #AuthN service etc, announcements etc
   public-router:
     build: ./router
     ports:
@@ -93,17 +94,21 @@ services:
     command: >
       -c /dist/config/public-router.yaml
       -s /dist/schema/public-supergraph.graphql
+      --hot-reload
 
-  private-router:
+  #AuthZ access only
+  protected-router:
     build: ./router
     ports:
       - "4002:4002"
     volumes:
       - supergraph:/dist/schema
     command: >
-      -c /dist/config/private-router.yaml
-      -s /dist/schema/private-supergraph.graphql
+      -c /dist/config/protected-router.yaml
+      -s /dist/schema/protected-supergraph.graphql
+      --hot-reload
 
+  #Later private-router for internal calls if not through Kafka yet.
 
   rover:
     build:

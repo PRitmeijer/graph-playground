@@ -11,9 +11,13 @@ class PhoneUser(models.Model):
     external_id = models.IntegerField(
         null=False,
         blank=False,
+        db_index=True,
         help_text="The user this phone user belongs to"
     )
 
     pps_id = models.IntegerField(
+        null=False,
+        blank=False,
+        db_index=True,
         help_text="The PPS ID of the user",
     )
