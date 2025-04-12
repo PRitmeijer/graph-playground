@@ -1,0 +1,49 @@
+schema @link(url: "https://specs.apollo.dev/federation/v2.7", import: ["@external", "@key"]) {
+  query: Query
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type DjangoModelType {
+  pk: ID!
+}
+
+extend type PhoneUserType @key(fields: "externalId") {
+  externalId: Int! @external
+  user: UserType!
+}
+
+type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+  users: [UserType!]!
+  userStatuses: [UserStatusType!]!
+}
+
+type UserStatusType {
+  id: ID!
+  user: DjangoModelType!
+  reason: String!
+  mode: String!
+  updatedAt: DateTime!
+}
+
+type UserType {
+  status: UserStatusType
+  id: ID!
+  email: String!
+  firstName: String!
+  prefixLastName: String!
+  lastName: String!
+  isActive: Boolean!
+  dateJoined: DateTime!
+}
+
+scalar _Any
+
+union _Entity = PhoneUserType
+
+type _Service {
+  sdl: String!
+}

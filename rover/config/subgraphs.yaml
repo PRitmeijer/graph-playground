@@ -1,2 +1,7 @@
-subgraphs:
-  phonehub: http://phonehub:8001/graphql/
+public_subgraphs:
+  governance: http://governance:8001/public/graphql/
+
+private_subgraphs:
+  governance: http://governance:8001/graphql/
+  phonehub: http://phonehub:8002/graphql/
+

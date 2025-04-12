@@ -1,0 +1,95 @@
+schema {
+  query: Query
+  mutation: PublicMutation
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type DjangoModelType {
+  pk: ID!
+}
+
+"\n     Errors messages and codes mapped to\n    fields or non fields errors.\n    Example:\n    {\n        field_name: [\n            {\n                \"message\": \"error message\",\n                \"code\": \"error_code\"\n            }\n        ],\n        other_field: [\n            {\n                \"message\": \"error message\",\n                \"code\": \"error_code\"\n            }\n        ],\n        nonFieldErrors: [\n            {\n                \"message\": \"error message\",\n                \"code\": \"error_code\"\n            }\n        ]\n    }\n    "
+scalar ExpectedError
+
+"\n    encapsulates token data, and refresh token data if `JWT_LONG_RUNNING_REFRESH_TOKEN` is on.\n    with an output interface.\n    "
+type ObtainJSONWebTokenType implements OutputInterface {
+  success: Boolean!
+  errors: ExpectedError
+  user: UserType
+  token: TokenType
+  refreshToken: RefreshTokenType
+}
+
+interface OutputInterface {
+  success: Boolean!
+  errors: ExpectedError
+}
+
+type PublicMutation {
+  "Obtain JSON web token for given user.\n\nAllow to perform login with different fields, The fields are defined\non settings.\n\nNot verified users can log in by default. This can be changes on\nsettings.\n\nIf user is archived, make it unarchived and return\n`unarchiving=True` on OutputBase.\n"
+  tokenAuth(password: String!, username: String!): ObtainJSONWebTokenType!
+
+  "### refreshToken to generate a new login token:\n\n*Use this only if `JWT_LONG_RUNNING_REFRESH_TOKEN` is True*\n\nusing the refresh-token you already got during authorization, and\nobtain a brand-new token (and possibly a new refresh token if you\nrevoked the previous). This is an alternative to log in when your\ntoken expired.\n"
+  refreshToken(revokeRefreshToken: Boolean!, refreshToken: String!): ObtainJSONWebTokenType!
+}
+
+type Query {
+  _service: _Service!
+}
+
+"\nRefresh token can be used to obtain a new token instead of log in again\nwhen the token expires.\n\n*This is only used if `JWT_LONG_RUNNING_REFRESH_TOKEN` is set to True.*\n"
+type RefreshTokenType {
+  """randomly generated token that is attached to a FK user."""
+  token: String!
+  created: DateTime!
+  revoked: DateTime
+  expiresAt: DateTime!
+  isExpired: Boolean!
+}
+
+"\nthe data that was used to create the token.\n"
+type TokenPayloadType {
+  """when the token was created"""
+  origIat: DateTime!
+
+  """when the token will be expired"""
+  exp: DateTime!
+  username: String!
+}
+
+"\nencapsulates the token with the payload that was used to create the token.\n"
+type TokenType {
+  payload: TokenPayloadType!
+
+  """The encoded payload, namely a token."""
+  token: String!
+}
+
+type UserStatusType {
+  verified: Boolean!
+  archived: Boolean!
+}
+
+type UserType {
+  logentrySet: [DjangoModelType!]!
+  isSuperuser: Boolean!
+  lastLogin: DateTime
+  isStaff: Boolean!
+  isActive: Boolean!
+  dateJoined: DateTime!
+  status: UserStatusType!
+  email: String!
+  firstName: String
+  lastName: String
+  id: ID!
+  archived: Boolean!
+  verified: Boolean!
+}
+
+scalar _Any
+
+type _Service {
+  sdl: String!
+}

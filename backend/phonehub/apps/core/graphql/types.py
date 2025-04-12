@@ -1,10 +1,11 @@
-import strawberry
 import strawberry_django
-from core.models import CustomUser as User
+
+from core.models import PhoneUser
 
 @strawberry_django.type(
-    model=User, 
-    fields=["id", "email", "first_name", "last_name", "is_active", "date_joined"]
+    model=PhoneUser,
+    fields=["id", "external_id", "pps_id"],
+    pagination=True
 )
-class UserType:
+class PhoneUserType:
     pass

@@ -12,10 +12,8 @@ COPY . /app/
 RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install -y netcat-openbsd
 
-
-
-# Make port 8001 available to the world outside the container
-EXPOSE 8001
+# Make port 8002 available to the world outside the container
+EXPOSE 8002
 
 # Copy the entrypoint script
 COPY docker/entrypoint.sh /entrypoint.sh

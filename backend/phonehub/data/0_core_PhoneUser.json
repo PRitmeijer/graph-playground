@@ -1,0 +1,82 @@
+[
+    {
+        "model": "core.phoneuser",
+        "pk": 2,
+        "fields": {
+            "external_id": 2,
+            "pps_id": 2002
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 3,
+        "fields": {
+            "external_id": 3,
+            "pps_id": 2003
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 4,
+        "fields": {
+            "external_id": 4,
+            "pps_id": 2004
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 5,
+        "fields": {
+            "external_id": 5,
+            "pps_id": 2005
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 6,
+        "fields": {
+            "external_id": 6,
+            "pps_id": 2006
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 7,
+        "fields": {
+            "external_id": 7,
+            "pps_id": 2007
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 8,
+        "fields": {
+            "external_id": 8,
+            "pps_id": 2008
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 9,
+        "fields": {
+            "external_id": 9,
+            "pps_id": 2009
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 10,
+        "fields": {
+            "external_id": 10,
+            "pps_id": 2010
+        }
+    },
+    {
+        "model": "core.phoneuser",
+        "pk": 11,
+        "fields": {
+            "external_id": 11,
+            "pps_id": 2011
+        }
+    }
+]

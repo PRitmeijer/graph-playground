@@ -1,12 +1,12 @@
 import strawberry
 import strawberry_django
 from typing import List, Optional
-from core.graphql.types import UserType
+from core.graphql.types import PhoneUserType
 from phone.models import CallLog, CallQueue, Contact
 
-@strawberry_django.type(model=CallQueue, fields=["id", "name"], pagination=True)
+@strawberry_django.type(model=CallQueue, fields=["id", "name"])
 class CallQueueType:
-    members: List[UserType]
+    members: List[PhoneUserType]
 
 @strawberry_django.type(
     model=CallLog, 
@@ -14,7 +14,7 @@ class CallQueueType:
     pagination=True
 )
 class CallLogType:
-    user: UserType
+    user: PhoneUserType
     call_queue: Optional[CallQueueType]
 
 @strawberry_django.type(
@@ -23,4 +23,4 @@ class CallLogType:
     pagination=True
 )
 class ContactType:
-    user: Optional[UserType]
+    user: Optional[PhoneUserType]

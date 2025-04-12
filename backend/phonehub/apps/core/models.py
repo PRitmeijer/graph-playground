@@ -1,18 +1,19 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
 
-# Custom User model example
-class CustomUser(AbstractUser, PermissionsMixin):
-    username = models.CharField(max_length=255, unique=True)
-    status = models.CharField(max_length=50, default='active')
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
+class PhoneUser(models.Model):
+    """
+    Model to represent a user in the phone system.
+    Reference object to the core user in microservice Governance.
+    Gets attached as user in the middleware.
+    Not to be confused with Django Users.
+    """
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username','first_name']
+    external_id = models.IntegerField(
+        null=False,
+        blank=False,
+        help_text="The user this phone user belongs to"
+    )
 
-    def __str__(self):
-        return self.username
+    pps_id = models.IntegerField(
+        help_text="The PPS ID of the user",
+    )

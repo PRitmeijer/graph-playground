@@ -3,7 +3,7 @@
 
 # Wait for the database to be ready
 echo "Waiting for database..."
-until nc -z -v -w30 db 5432; do
+until nc -z -v -w30 db_phonehub 5432; do
   echo "Waiting for database connection..."
   sleep 1
 done
@@ -26,4 +26,4 @@ EOF
 
 # Start Gunicorn server
 echo "Starting server..."
-gunicorn wsgi:application --bind 0.0.0.0:8001
+gunicorn wsgi:application --bind 0.0.0.0:8002

@@ -1,0 +1,102 @@
+[
+    {
+        "model": "userstatus.userstatus",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "reason": "lunch",
+            "mode": "idle",
+            "updated_at": "2025-04-12T08:30:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 3,
+        "fields": {
+            "user": 3,
+            "reason": "available",
+            "mode": "idle",
+            "updated_at": "2025-04-12T09:00:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 4,
+        "fields": {
+            "user": 4,
+            "reason": "unavailable",
+            "mode": "logged_out",
+            "updated_at": "2025-04-12T09:30:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 5,
+        "fields": {
+            "user": 5,
+            "reason": "training",
+            "mode": "calling",
+            "updated_at": "2025-04-12T10:00:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 6,
+        "fields": {
+            "user": 6,
+            "reason": "available",
+            "mode": "idle",
+            "updated_at": "2025-04-12T10:30:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 7,
+        "fields": {
+            "user": 7,
+            "reason": "lunch",
+            "mode": "idle",
+            "updated_at": "2025-04-12T11:00:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 8,
+        "fields": {
+            "user": 8,
+            "reason": "unavailable",
+            "mode": "logged_out",
+            "updated_at": "2025-04-12T11:30:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 9,
+        "fields": {
+            "user": 9,
+            "reason": "available",
+            "mode": "idle",
+            "updated_at": "2025-04-12T12:00:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 10,
+        "fields": {
+            "user": 10,
+            "reason": "training",
+            "mode": "calling",
+            "updated_at": "2025-04-12T12:30:00Z"
+        }
+    },
+    {
+        "model": "userstatus.userstatus",
+        "pk": 11,
+        "fields": {
+            "user": 11,
+            "reason": "lunch",
+            "mode": "idle",
+            "updated_at": "2025-04-12T13:00:00Z"
+        }
+    }
+]

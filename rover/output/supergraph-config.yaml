@@ -1,6 +1,0 @@
-federation_version: 2
-subgraphs:
-  phonehub:
-    routing_url: http://phonehub:8001/graphql/
-    schema:
-      file: /output/phonehub.graphql

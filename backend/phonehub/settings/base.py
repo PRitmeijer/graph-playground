@@ -29,8 +29,6 @@ INSTALLED_APPS = [
     'phone.apps.PhoneConfig',
 ]
 
-AUTH_USER_MODEL = 'core.CustomUser'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

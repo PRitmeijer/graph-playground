@@ -1,9 +1,9 @@
 import strawberry
 import strawberry_django
 from typing import List
+from core.graphql.types import PhoneUserType
 
-from .types import UserType
 @strawberry.type
 class Query:
-    # Query to fetch all users
-    users: List[UserType] = strawberry_django.field()
+    # Query to all phone users
+    phone_users:List[PhoneUserType] = strawberry_django.field()

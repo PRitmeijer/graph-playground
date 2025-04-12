@@ -1,17 +1,19 @@
 services:
-  phonehub:
+  governance:
     build: 
-      context: ./backend/phonehub
+      context: ./backend/governance
       dockerfile: ./docker/Dockerfile
     ports:
       - "8001:8001"
+    volumes:
+      - governance_keys:/keys
     environment:
       - SECRET_KEY=changeme
       - DEBUG=True
-      - ALLOWED_HOSTS=localhost,127.0.0.1,phonehub
+      - ALLOWED_HOSTS=localhost,127.0.0.1,governance
       - KEYS_DIR=/keys
       - POSTGRES_DB=db
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=db_governance
       - POSTGRES_PORT=5432
       - POSTGRES_RUNTIME_USER=django
       - POSTGRES_RUNTIME_PASSWORD=django
@@ -21,10 +23,10 @@ services:
       - DJANGO_SUPERUSER_PASSWORD=adminpassword
       - DJANGO_SUPERUSER_EMAIL=admin@example.com
     depends_on:
-      db:
+      db_governance:
         condition: service_healthy
 
-  db:
+  db_governance:
     build: ./db
     environment:
       POSTGRES_DB: db
@@ -33,7 +35,48 @@ services:
       POSTGRES_RUNTIME_USER: django
       POSTGRES_RUNTIME_PASSWORD: django
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_governance:/var/lib/postgresql/data
+    healthcheck:
+        test: ["CMD", "pg_isready", "-U", "admin", "-d", "db"]
+        interval: 10s
+        retries: 5
+        start_period: 5s
+        timeout: 5s
+
+  phonehub:
+    build: 
+      context: ./backend/phonehub
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - SECRET_KEY=changeme
+      - DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1,phonehub
+      - POSTGRES_DB=db
+      - POSTGRES_HOST=db_phonehub
+      - POSTGRES_PORT=5432
+      - POSTGRES_RUNTIME_USER=django
+      - POSTGRES_RUNTIME_PASSWORD=django
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_PASSWORD=adminpassword
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com
+    depends_on:
+      db_phonehub:
+        condition: service_healthy
+
+  db_phonehub:
+    build: ./db
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_RUNTIME_USER: django
+      POSTGRES_RUNTIME_PASSWORD: django
+    volumes:
+      - db_phonehub:/var/lib/postgresql/data
     healthcheck:
         test: ["CMD", "pg_isready", "-U", "admin", "-d", "db"]
         interval: 10s
@@ -41,17 +84,26 @@ services:
         start_period: 5s
         timeout: 5s
   
-  router:
+  public-router:
     build: ./router
     ports:
-      - "4000:4000"
+      - "4001:4001"
     volumes:
       - supergraph:/dist/schema
-    command:
-      - -c
-      - /dist/config/router.yaml
-      - -s
-      - /dist/schema/supergraph.graphql
+    command: >
+      -c /dist/config/public-router.yaml
+      -s /dist/schema/public-supergraph.graphql
+
+  private-router:
+    build: ./router
+    ports:
+      - "4002:4002"
+    volumes:
+      - supergraph:/dist/schema
+    command: >
+      -c /dist/config/private-router.yaml
+      -s /dist/schema/private-supergraph.graphql
+
 
   rover:
     build:
@@ -66,6 +118,8 @@ networks:
     driver: bridge
 
 volumes:
-  db_data:
+  governance_keys:
+  db_governance:
+  db_phonehub:
   supergraph:
             

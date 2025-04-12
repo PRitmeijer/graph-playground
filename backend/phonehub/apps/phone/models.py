@@ -1,4 +1,5 @@
 from django.db import models
+from core.models import PhoneUser
 
 # Create your models here.
 class CallLog(models.Model):
@@ -33,10 +34,12 @@ class CallLog(models.Model):
     )
     # Link this call record to a user (the call history for that user)
     user = models.ForeignKey(
-        "core.CustomUser",
-        on_delete=models.CASCADE,
-        related_name='call_history',
-        help_text="The user this call belongs to"
+        PhoneUser,
+        related_name='call_logs',
+        on_delete=models.SET_NULL,
+        null=True,
+        db_index=True,
+        help_text="User associated with this call log entry",
     )
 
     def __str__(self):
@@ -48,9 +51,10 @@ class CallQueue(models.Model):
         max_length=100,
         help_text="Name of the call queue"
     )
+
     # ManyTo-many relationship with Users: a queue can have multiple members and a user can belong to multiple queues.
     members = models.ManyToManyField(
-        'core.CustomUser',
+        PhoneUser,
         related_name='call_queues',
         blank=True,
         help_text="Users that are members of this call queue"
@@ -98,12 +102,16 @@ class Contact(models.Model):
         help_text="Landline number or extension"
     )
 
-    # For internal contacts, we link directly to the local user.
+    # For internal contacts, we link directly to the local user of that contact.
     # For non‑internal contacts (external/personal) this field can be left empty.
-    user = models.IntegerField(
+    user = models.ForeignKey(
+        PhoneUser,
         blank=True,
         null=True,
-        help_text="Link to a User for internal contacts"
+        on_delete=models.CASCADE,
+        related_name='contacts',
+        help_text="Link to the user"
+
     )
 
     department = models.CharField(
@@ -116,12 +124,17 @@ class Contact(models.Model):
     type = models.CharField(
         max_length=10,
         choices=CONTACT_TYPE_CHOICES,
+        db_index=True,
         help_text="Contact type: internal, external, or personal"
     )
 
-    personal_contact_owner = models.IntegerField(
+    personal_contact_owner = models.ForeignKey(
+        PhoneUser,
         blank=True,
         null=True,
+        on_delete=models.CASCADE,
+        db_index=True,
+        related_name='personal_contacts',
         help_text="User ID indicating the owner of this personal contact"
     )
 

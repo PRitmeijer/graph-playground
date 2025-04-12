@@ -1,0 +1,8 @@
+Django>=5.1
+psycopg2-binary>=2.9
+python-dotenv>=1.0.1
+gunicorn>=23.0.0
+strawberry-graphql-django>=0.57.1
+strawberry-django-auth>=0.378.4
+django-cors-headers>=4.7.0
+cryptography>=44.0.2

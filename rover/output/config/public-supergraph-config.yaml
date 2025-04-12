@@ -1,0 +1,6 @@
+federation_version: 2
+subgraphs:
+  governance:
+    routing_url: http://governance:8001/public/graphql/
+    schema:
+      file: /output/subgraphs/public/public-governance.graphql

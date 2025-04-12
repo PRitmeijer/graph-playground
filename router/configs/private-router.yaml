@@ -1,0 +1,15 @@
+supergraph:
+  # The socket address and port to listen on
+  listen: 0.0.0.0:4002
+  # Introspection should never run on PROD
+  introspection: true
+
+sandbox:
+  # Should be disabled in PROD
+  enabled: true
+
+homepage:
+  enabled: false
+
+cors:
+  allow_any_origin: true

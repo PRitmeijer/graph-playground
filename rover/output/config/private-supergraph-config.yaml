@@ -1,0 +1,10 @@
+federation_version: 2
+subgraphs:
+  phonehub:
+    routing_url: http://phonehub:8002/graphql/
+    schema:
+      file: /output/subgraphs/private/private-phonehub.graphql
+  governance:
+    routing_url: http://governance:8001/graphql/
+    schema:
+      file: /output/subgraphs/private/private-governance.graphql
