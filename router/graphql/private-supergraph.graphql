@@ -74,6 +74,12 @@ scalar DateTime
   @join__type(graph: GOVERNANCE)
   @join__type(graph: PHONEHUB)
 
+type DjangoModelType
+  @join__type(graph: GOVERNANCE)
+{
+  pk: ID!
+}
+
 scalar join__DirectiveArguments
 
 scalar join__FieldSet
@@ -111,21 +117,14 @@ input OffsetPaginationInput
   limit: Int
 }
 
-type PhoneUser
-  @join__type(graph: GOVERNANCE, key: "id")
-{
-  id: ID!
-  externalId: Int!
-  user: UserType!
-}
-
 type PhoneUserType
+  @join__type(graph: GOVERNANCE, key: "externalId", extension: true)
   @join__type(graph: PHONEHUB)
 {
-  id: ID!
   externalId: Int!
-  ppsId: Int!
-  displayName: String!
+  user: UserType! @join__field(graph: GOVERNANCE)
+  id: ID! @join__field(graph: PHONEHUB)
+  ppsId: Int! @join__field(graph: PHONEHUB)
 }
 
 type Query
@@ -133,19 +132,32 @@ type Query
   @join__type(graph: PHONEHUB)
 {
   users: [UserType!]! @join__field(graph: GOVERNANCE)
+  userStatuses: [UserStatusType!]! @join__field(graph: GOVERNANCE)
   phoneUsers(pagination: OffsetPaginationInput): [PhoneUserType!]! @join__field(graph: PHONEHUB)
   callLogs(pagination: OffsetPaginationInput): [CallLogType!]! @join__field(graph: PHONEHUB)
   callQueues(pagination: OffsetPaginationInput): [CallQueueType!]! @join__field(graph: PHONEHUB)
   contacts(search: String = null, pagination: OffsetPaginationInput): ContactTypeOffsetPaginated! @join__field(graph: PHONEHUB)
 }
 
-type UserType
+type UserStatusType
   @join__type(graph: GOVERNANCE)
 {
   id: ID!
-  firstName: String!
-  lastName: String!
+  user: DjangoModelType!
+  reason: String!
+  mode: String!
+  updatedAt: DateTime!
+}
+
+type UserType
+  @join__type(graph: GOVERNANCE)
+{
+  status: UserStatusType
+  id: ID!
   email: String!
+  firstName: String!
+  prefixLastName: String!
+  lastName: String!
   isActive: Boolean!
   dateJoined: DateTime!
 }
