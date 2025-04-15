@@ -4,6 +4,7 @@ from user.graphql.mutation import Mutation as UserMutation, PublicMutation as Pu
 
 from userstatus.graphql.query import Query as UserStatusQuery
 from user.graphql.types import PhoneUserType
+from strawberry_django.optimizer import DjangoOptimizerExtension
 
 @strawberry.type
 class Query(UserQuery, UserStatusQuery):
@@ -21,6 +22,9 @@ schema = strawberry.federation.Schema(
     query=Query,
     types=types,
     enable_federation_2=True,
+    extensions=[
+        DjangoOptimizerExtension
+    ]
 )
 
 @strawberry.type
@@ -35,4 +39,7 @@ class PublicMutation(PublicUserMutation):
 public_schema = strawberry.federation.Schema(
     mutation=PublicMutation,
     enable_federation_2=True,
+    extensions=[
+        DjangoOptimizerExtension
+    ]
 )

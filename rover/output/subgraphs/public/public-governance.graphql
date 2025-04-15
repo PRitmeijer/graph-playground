@@ -29,7 +29,7 @@ interface OutputInterface {
 
 type PublicMutation {
   "Obtain JSON web token for given user.\n\nAllow to perform login with different fields, The fields are defined\non settings.\n\nNot verified users can log in by default. This can be changes on\nsettings.\n\nIf user is archived, make it unarchived and return\n`unarchiving=True` on OutputBase.\n"
-  tokenAuth(username: String!, password: String!): ObtainJSONWebTokenType!
+  tokenAuth(password: String!, username: String!): ObtainJSONWebTokenType!
 
   "### refreshToken to generate a new login token:\n\n*Use this only if `JWT_LONG_RUNNING_REFRESH_TOKEN` is True*\n\nusing the refresh-token you already got during authorization, and\nobtain a brand-new token (and possibly a new refresh token if you\nrevoked the previous). This is an alternative to log in when your\ntoken expired.\n"
   refreshToken(revokeRefreshToken: Boolean!, refreshToken: String!): ObtainJSONWebTokenType!
